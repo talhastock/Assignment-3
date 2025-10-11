@@ -30,15 +30,20 @@ jobs:
       - name: Train model
         run: |
           python src/train.py --seed 42
-          cat metrics.json
 
       - name: Build Docker image
         run: |
           IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-          echo "Building $IMAGE_NAME"
           docker build -t $IMAGE_NAME .
-          echo "Image built successfully"
-          docker images | grep ${{ github.repository }}
+
+      - name: Test Docker image locally
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          docker run -d -p 8000:8000 --name test_container $IMAGE_NAME
+          sleep 15
+          curl -f http://localhost:8000/health
+          docker stop test_container
+          docker rm test_container
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -50,29 +55,7 @@ jobs:
       - name: Push image to GHCR
         run: |
           IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-          echo "Pushing $IMAGE_NAME"
           docker push $IMAGE_NAME
-          echo "Image pushed successfully"
-
-      - name: Smoke test container
-        run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-          docker run -d -p 8000:8000 --name test_container $IMAGE_NAME
-          sleep 10
-          docker logs test_container
-          curl -f http://localhost:8000/health || (docker logs test_container && exit 1)
-          docker stop test_container
-          docker rm test_container
-
-      - name: Read metrics and changelog
-        id: read_files
-        run: |
-          echo "metrics<<EOF" >> $GITHUB_OUTPUT
-          cat metrics.json >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          cat CHANGELOG.md >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -80,10 +63,19 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           body: |
-            ## Metrics
-            ```json
-            ${{ steps.read_files.outputs.metrics }}
+            ## Docker Image
+            
+            Pull the image:
+            ```bash
+            docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }}
             ```
-
-            ## Changelog
-            ${{ steps.read_files.outputs.changelog }}
+            
+            Run the container:
+            ```bash
+            docker run -d -p 8000:8000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ```
+            
+            ## Health Check
+            ```bash
+            curl http://localhost:8000/health
+            ```
