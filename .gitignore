@@ -1,0 +1,22 @@
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.env
+.venv
+venv/
+.env.*
+*.log
+
+# data/model artifacts
+model/*.pkl
+*.onnx
+*.joblib
+
+# os/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
