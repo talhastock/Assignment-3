@@ -12,13 +12,16 @@ def test_training_creates_artifacts():
     # Check files
     assert Path("model/model.pkl").exists()
     assert Path("model/scaler.pkl").exists()
+    assert Path("model/model_v0.2.pkl").exists()
+    assert Path("model/scaler_v0.2.pkl").exists()
     assert Path("model/feature_names.json").exists()
     assert Path("metrics.json").exists()
+    assert Path("metrics_v0.2.json").exists()
 
     # Check metrics content
     assert isinstance(metrics["rmse"], float)
-    assert metrics["version"] == "v0.1"
-    assert metrics["model"] == "LinearRegression"
+    assert metrics["version"] == "v0.2"
+    assert metrics["model"] == "Ridge"
     assert metrics["scaler"] == "StandardScaler"
 
     # metrics.json is readable and consistent

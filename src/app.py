@@ -6,14 +6,27 @@ import numpy as np
 from pathlib import Path
 from flask import Flask, request, jsonify
 
-APP_VERSION = "v0.1"
+APP_VERSION = "v0.2"
 MODEL_DIR = Path("model")
+MODEL_CANDIDATES = [
+    MODEL_DIR / "model_v0.2.pkl",
+    MODEL_DIR / "model.pkl",
+]
 
 app = Flask(__name__)
 
 # --- Load artifacts at startup ---
 try:
-    model = joblib.load(MODEL_DIR / "model.pkl")
+    model = None
+    for candidate in MODEL_CANDIDATES:
+        if candidate.exists():
+            model = joblib.load(candidate)
+            break
+    if model is None:
+        raise FileNotFoundError(
+            "No trained model artifacts found. Run `python src/train.py --model ridge` first."
+        )
+
     with open(MODEL_DIR / "feature_names.json", "r", encoding="utf-8") as f:
         feature_names = json.load(f)
 except Exception as e:

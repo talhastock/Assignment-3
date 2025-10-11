@@ -31,8 +31,9 @@ jobs:
 
       - name: Train model smoke test
         run: |
-          python src/train.py --seed 42
+          python src/train.py --seed 42 --model ridge
           cat metrics.json
+          cat metrics_v0.2.json
 
       - name: Run tests
         run: |
@@ -45,3 +46,4 @@ jobs:
           path: |
             model/
             metrics.json
+            metrics_v0.2.json

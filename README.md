@@ -10,8 +10,8 @@ This repository implements a small ML service that predicts short-term diabetes 
   - MLOps team (this repo) owns training, packaging, testing, releasing.
 
 - **Iterations**
-  - **v0.1**: Baseline – `StandardScaler + LinearRegression`, report RMSE, ship working API & Docker image.
-  - **v0.2**: Improvement – try `Ridge` or `RandomForestRegressor` or better preprocessing. Show metric deltas (RMSE; and precision/recall if adding a high-risk flag) in `CHANGELOG.md`.
+  - **v0.1**: Baseline – `StandardScaler + LinearRegression`, RMSE ≈ **53.85**, shipped as first release.
+  - **v0.2** *(current)*: `StandardScaler + Ridge(alpha=1.0)` which lowers RMSE to **53.78** (Δ −0.076). Metrics deltas are documented in `CHANGELOG.md` and `metrics_v0.2.json`.
 
 - **Non-functional**
   - **Portability**: Self-contained Docker image with baked model.
@@ -39,7 +39,7 @@ y = Xy.frame["target"]  # progression index (higher = worse)
 
 ## API Contract (to be implemented in later steps)
 
-**GET /health** → `{"status":"ok","model_version":"<semver>"}`
+**GET /health** → `{"status":"ok","model_version":"v0.2"}`
 
 **POST /predict** with JSON features (scaled values):
 
@@ -61,10 +61,10 @@ y = Xy.frame["target"]  # progression index (higher = worse)
 Response:
 
 ```json
-{"prediction": <float>}
+{"prediction": 157.42, "status": "ok"}
 ```
 
-Exact field names & response shape will be finalized and documented with the implementation.
+All 10 diabetes dataset features are required. Missing features return HTTP 400 with error details.
 
 ## CI/CD Expectations (later steps)
 
@@ -79,9 +79,9 @@ The GitHub Actions tab must show:
 - PR/push workflow runs.
 - Tag workflow (v0.1, v0.2) that builds, tests, pushes image to GHCR, and creates a Release with metrics/changelog.
 
-## Local Training (v0.1)
+## Local Training (v0.2 default)
 
-Train the baseline model (StandardScaler + LinearRegression), save artifacts, and write metrics:
+Train the improved model (StandardScaler + Ridge) and persist artifacts/metrics:
 
 ```bash
 # (optional) create/activate venv
@@ -91,29 +91,42 @@ python -m venv venv
 
 pip install -r requirements.txt
 
-# run training
-python src/train.py --seed 42
+# run training (default model = ridge)
+python src/train.py --seed 42 --model ridge
 
 # outputs:
-# - model/model.pkl
-# - model/scaler.pkl
+# - model/model_v0.2.pkl  (also copied to model/model.pkl)
+# - model/scaler_v0.2.pkl (also copied to model/scaler.pkl)
 # - model/feature_names.json
-# - metrics.json (at repo root)
+# - metrics_v0.2.json + metrics.json (latest snapshot)
 ```
 
-`metrics.json` includes rmse and run metadata:
+`metrics_v0.2.json` (and `metrics.json`) captures the new performance and baseline delta:
 
 ```json
 {
-  "version": "v0.1",
-  "rmse": 53.85,
+  "version": "v0.2",
+  "rmse": 53.78,
   "n_train": 353,
   "n_test": 89,
   "random_state": 42,
-  "model": "LinearRegression",
-  "scaler": "StandardScaler"
+  "model": "Ridge",
+  "model_description": "StandardScaler + Ridge(alpha=1.0)",
+  "scaler": "StandardScaler",
+  "baseline_rmse_v0_1": 53.85,
+  "rmse_delta_vs_v0_1": -0.076
 }
 ```
+
+### Optional: reproduce v0.1 baseline
+
+To regenerate the original baseline artifacts and metrics, run:
+
+```bash
+python src/train.py --seed 42 --model linear
+```
+
+This will emit `model_v0.1.pkl`, `scaler_v0.1.pkl`, and `metrics_v0.1.json` for comparison.
 
 Run smoke tests:
 
@@ -137,7 +150,7 @@ Health check
 
 Response:
 ```json
-{"status": "ok", "model_version": "v0.1"}
+{"status": "ok", "model_version": "v0.2"}
 ```
 
 **POST /predict**
@@ -152,7 +165,7 @@ curl -X POST http://localhost:8000/predict \
 
 Response:
 ```json
-{"prediction": 183.42, "status": "ok"}
+{"prediction": 157.42, "status": "ok"}
 ```
 
 If input is invalid or missing features, returns HTTP 400 with:
@@ -166,8 +179,8 @@ The service can be run entirely in Docker.
 
 ### Build and run manually
 ```bash
-docker build -t diabetes-api:v0.1 .
-docker run -d -p 8000:8000 --name diabetes_api diabetes-api:v0.1
+docker build -t diabetes-api:v0.2 .
+docker run -d -p 8000:8000 --name diabetes_api diabetes-api:v0.2
 ```
 
 ### Or using Docker Compose
@@ -178,7 +191,7 @@ docker-compose up --build
 ### Verify health
 ```bash
 curl http://localhost:8000/health
-# {"status":"ok","model_version":"v0.1"}
+# {"status":"ok","model_version":"v0.2"}
 ```
 
 ### Example prediction
@@ -189,7 +202,7 @@ curl -X POST http://localhost:8000/predict \
 ```
 Response:
 ```json
-{"prediction": 157.75, "status": "ok"}
+{"prediction": 157.42, "status": "ok"}
 ```
 
 ## CI/CD Pipelines (GitHub Actions)

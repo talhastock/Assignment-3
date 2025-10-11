@@ -9,7 +9,7 @@ def test_health_route():
     assert res.status_code == 200
     data = res.get_json()
     assert data["status"] == "ok"
-    assert "model_version" in data
+    assert data["model_version"] == "v0.2"
 
 
 def test_predict_route():
