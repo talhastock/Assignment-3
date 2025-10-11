@@ -57,6 +57,16 @@ jobs:
           sleep 5
           curl -f http://localhost:8000/health
 
+      - name: Read metrics and changelog
+        id: read_files
+        run: |
+          echo "metrics<<EOF" >> $GITHUB_OUTPUT
+          cat metrics.json >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          cat CHANGELOG.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -64,7 +74,9 @@ jobs:
           name: Release ${{ github.ref_name }}
           body: |
             ## Metrics
-            $(cat metrics.json)
+            ```json
+            ${{ steps.read_files.outputs.metrics }}
+            ```
 
             ## Changelog
-            $(cat CHANGELOG.md)
+            ${{ steps.read_files.outputs.changelog }}
