@@ -16,6 +16,9 @@ All notable changes to this project will be documented here.
 - Added Dockerfile and docker-compose.yml
 - Container exposes port 8000 with built-in healthcheck
 - Verified service runs via Docker Compose
+- Added CI/CD GitHub Actions:
+  - ci.yml for lint/tests/artifacts on push
+  - release.yml for Docker build/publish and GitHub Release creation
 
 ## [v0.2] - Improvement (planned)
 

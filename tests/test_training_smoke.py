@@ -4,6 +4,7 @@ import json
 
 from src.train import train
 
+
 def test_training_creates_artifacts():
     # Run training (uses default paths)
     metrics = train(seed=42)

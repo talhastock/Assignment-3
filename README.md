@@ -192,6 +192,31 @@ Response:
 {"prediction": 157.75, "status": "ok"}
 ```
 
+## CI/CD Pipelines (GitHub Actions)
+
+Two workflows automate the project lifecycle:
+
+### Continuous Integration (`ci.yml`)
+Runs on every push/PR:
+- Linting (`flake8`)
+- Unit tests (`pytest`)
+- Smoke training (`python src/train.py --seed 42`)
+- Uploads artifacts (model and metrics)
+
+### Release Pipeline (`release.yml`)
+Triggered on tag push (`v0.1`, `v0.2`):
+- Builds Docker image
+- Pushes to GHCR (`ghcr.io/<username>/Assignment-3:<tag>`)
+- Smoke tests container (`/health`)
+- Creates GitHub Release with metrics and CHANGELOG summary
+
+Example tag:
+```bash
+git tag v0.1
+git push origin v0.1
+```
+This automatically publishes the Docker image and Release.
+
 ## Repository Structure (will evolve)
 
 ```

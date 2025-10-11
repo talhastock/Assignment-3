@@ -2,6 +2,7 @@
 import json
 from src.app import app, feature_names
 
+
 def test_health_route():
     client = app.test_client()
     res = client.get("/health")
@@ -9,6 +10,7 @@ def test_health_route():
     data = res.get_json()
     assert data["status"] == "ok"
     assert "model_version" in data
+
 
 def test_predict_route():
     client = app.test_client()
