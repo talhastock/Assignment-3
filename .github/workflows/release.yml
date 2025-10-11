@@ -27,6 +27,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Train model
+        run: |
+          python src/train.py --seed 42
+          cat metrics.json
+
       - name: Build Docker image
         run: |
           IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
