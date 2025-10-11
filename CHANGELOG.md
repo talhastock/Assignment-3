@@ -4,11 +4,12 @@ All notable changes to this project will be documented here.
 
 ## [Unreleased]
 
-## [v0.1] - Baseline (planned)
+## [v0.1] - 2025-10-11
 
-- StandardScaler + LinearRegression
-- Report RMSE on held-out split
-- Working API & Docker image
+- Baseline: StandardScaler + LinearRegression
+- Deterministic training (random_state=42), dependency versions pinned
+- Saved artifacts: model.pkl, scaler.pkl, feature_names.json
+- Logged metrics: metrics.json (includes RMSE and run metadata)
 
 ## [v0.2] - Improvement (planned)
 

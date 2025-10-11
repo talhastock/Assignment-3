@@ -79,16 +79,46 @@ The GitHub Actions tab must show:
 - PR/push workflow runs.
 - Tag workflow (v0.1, v0.2) that builds, tests, pushes image to GHCR, and creates a Release with metrics/changelog.
 
-## Local Dev Quickstart (will be expanded later)
+## Local Training (v0.1)
+
+Train the baseline model (StandardScaler + LinearRegression), save artifacts, and write metrics:
 
 ```bash
-# create/activate venv (example)
+# (optional) create/activate venv
 python -m venv venv
 # Windows: venv\Scripts\activate
 # macOS/Linux: source venv/bin/activate
 
 pip install -r requirements.txt
-# (training & API commands will be added in later steps)
+
+# run training
+python src/train.py --seed 42
+
+# outputs:
+# - model/model.pkl
+# - model/scaler.pkl
+# - model/feature_names.json
+# - metrics.json (at repo root)
+```
+
+`metrics.json` includes rmse and run metadata:
+
+```json
+{
+  "version": "v0.1",
+  "rmse": 53.85,
+  "n_train": 353,
+  "n_test": 89,
+  "random_state": 42,
+  "model": "LinearRegression",
+  "scaler": "StandardScaler"
+}
+```
+
+Run smoke tests:
+
+```bash
+pytest -q
 ```
 
 ## Repository Structure (will evolve)

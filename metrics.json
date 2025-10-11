@@ -1,0 +1,9 @@
+{
+  "version": "v0.1",
+  "rmse": 53.85344583676593,
+  "n_train": 353,
+  "n_test": 89,
+  "random_state": 42,
+  "model": "LinearRegression",
+  "scaler": "StandardScaler"
+}
