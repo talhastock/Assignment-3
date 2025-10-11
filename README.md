@@ -121,6 +121,45 @@ Run smoke tests:
 pytest -q
 ```
 
+## API Service (Flask)
+
+Run the API locally (requires that training artifacts already exist):
+
+```bash
+python src/app.py
+```
+
+### Endpoints
+
+**GET /health**
+
+Health check
+
+Response:
+```json
+{"status": "ok", "model_version": "v0.1"}
+```
+
+**POST /predict**
+
+Send scaled feature values (from scikit-learn Diabetes dataset order):
+
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"age":0.02,"sex":-0.044,"bmi":0.06,"bp":-0.03,"s1":-0.02,"s2":0.03,"s3":-0.02,"s4":0.02,"s5":0.02,"s6":-0.001}'
+```
+
+Response:
+```json
+{"prediction": 183.42, "status": "ok"}
+```
+
+If input is invalid or missing features, returns HTTP 400 with:
+```json
+{"error": "Missing features: ['bmi']", "status": "failed"}
+```
+
 ## Repository Structure (will evolve)
 
 ```
