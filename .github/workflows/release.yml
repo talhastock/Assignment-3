@@ -37,6 +37,8 @@ jobs:
           IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           echo "Building $IMAGE_NAME"
           docker build -t $IMAGE_NAME .
+          echo "Image built successfully"
+          docker images | grep ${{ github.repository }}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -48,14 +50,19 @@ jobs:
       - name: Push image to GHCR
         run: |
           IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          echo "Pushing $IMAGE_NAME"
           docker push $IMAGE_NAME
+          echo "Image pushed successfully"
 
       - name: Smoke test container
         run: |
           IMAGE_NAME=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           docker run -d -p 8000:8000 --name test_container $IMAGE_NAME
-          sleep 5
-          curl -f http://localhost:8000/health
+          sleep 10
+          docker logs test_container
+          curl -f http://localhost:8000/health || (docker logs test_container && exit 1)
+          docker stop test_container
+          docker rm test_container
 
       - name: Read metrics and changelog
         id: read_files
