@@ -13,6 +13,9 @@ All notable changes to this project will be documented here.
 - Added Flask API service with /health and /predict endpoints
 - Implemented JSON error handling and feature-order validation
 - Added smoke tests for API routes
+- Added Dockerfile and docker-compose.yml
+- Container exposes port 8000 with built-in healthcheck
+- Verified service runs via Docker Compose
 
 ## [v0.2] - Improvement (planned)
 

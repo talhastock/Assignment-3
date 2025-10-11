@@ -20,3 +20,7 @@ model/*.pkl
 Thumbs.db
 .idea/
 .vscode/
+
+# docker
+*.tar
+*.log

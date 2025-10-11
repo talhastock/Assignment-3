@@ -160,6 +160,38 @@ If input is invalid or missing features, returns HTTP 400 with:
 {"error": "Missing features: ['bmi']", "status": "failed"}
 ```
 
+## Docker Deployment (v0.1)
+
+The service can be run entirely in Docker.
+
+### Build and run manually
+```bash
+docker build -t diabetes-api:v0.1 .
+docker run -d -p 8000:8000 --name diabetes_api diabetes-api:v0.1
+```
+
+### Or using Docker Compose
+```bash
+docker-compose up --build
+```
+
+### Verify health
+```bash
+curl http://localhost:8000/health
+# {"status":"ok","model_version":"v0.1"}
+```
+
+### Example prediction
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"age":0.02,"sex":-0.044,"bmi":0.06,"bp":-0.03,"s1":-0.02,"s2":0.03,"s3":-0.02,"s4":0.02,"s5":0.02,"s6":-0.001}'
+```
+Response:
+```json
+{"prediction": 157.75, "status": "ok"}
+```
+
 ## Repository Structure (will evolve)
 
 ```
