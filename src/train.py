@@ -15,7 +15,6 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-
 ARTIFACT_DIR = Path("model")
 ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
 METRICS_PATH = Path("metrics.json")
@@ -40,6 +39,7 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
         "description": "StandardScaler + RandomForestRegressor(n_estimators=100)",
     },
 }
+
 
 def train(seed: int = 42, model_name: str = "ridge") -> dict:
     if model_name not in MODEL_REGISTRY:
