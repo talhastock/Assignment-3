@@ -32,7 +32,7 @@ jobs:
 
       - name: Train model
         run: |
-          python src/train.py --seed 42 --model ridge
+          python src/train.py --seed 42 --model random_forest
 
       - name: Build Docker image
         run: |
