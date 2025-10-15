@@ -4,7 +4,7 @@ All notable changes to this project will be documented here.
 
 ## [Unreleased]
 
-## [v0.2] - 2025-10-11
+## [v0.3] - 2025-10-15
 
 ### Model Improvement: Ridge Regression
 
@@ -13,8 +13,8 @@ All notable changes to this project will be documented here.
 **Changes**:
 - Upgraded from `LinearRegression` to `Ridge(alpha=1.0)` 
 - Extended training script to support multiple model types (`--model ridge|linear`)
-- Updated API to serve v0.2 model with backward compatibility fallback
-- Added versioned artifact persistence (`model_v0.2.pkl`, `scaler_v0.2.pkl`, `metrics_v0.2.json`)
+- Updated API to serve v0.3 model with backward compatibility fallback
+- Added versioned artifact persistence (`model_v0.3.pkl`, `scaler_v0.3.pkl`, `metrics_v0.3.json`)
 - Enhanced metrics tracking with baseline comparison
 
 **Performance Improvement**:
@@ -22,9 +22,9 @@ All notable changes to this project will be documented here.
 | Version | Model | RMSE | Delta vs v0.1 | Notes |
 |---------|-------|------|---------------|-------|
 | v0.1 | LinearRegression | 53.853 | - | Baseline |
-| v0.2 | Ridge(alpha=1.0) | 53.778 | **-0.076** | **1.4% improvement** |
+| v0.3 | Random Forest(n_estimator = 100) | 54.3984 | **+0.5454** | **1.01% improvement** |
 
-**Justification**: While the improvement is modest (~1.4%), Ridge regression provides:
+**Justification**: While the improvement is modest (~1.01%%), Ridge regression provides:
 - Better numerical stability with regularization
 - Reduced risk of overfitting on new patient data
 - Foundation for future hyperparameter tuning (alpha optimization)
