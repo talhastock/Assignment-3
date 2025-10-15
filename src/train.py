@@ -9,6 +9,7 @@ from typing import Dict, Any
 import joblib
 import numpy as np
 from sklearn.datasets import load_diabetes
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
@@ -32,8 +33,13 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
         "estimator_kwargs": {"alpha": 1.0},
         "description": "StandardScaler + Ridge(alpha=1.0)",
     },
+    "random_forest": {
+        "version": "v0.3",
+        "estimator": RandomForestRegressor,
+        "estimator_kwargs": {"n_estimators": 100, "random_state": 42},
+        "description": "StandardScaler + RandomForestRegressor(n_estimators=100)",
+    },
 }
-
 
 def train(seed: int = 42, model_name: str = "ridge") -> dict:
     if model_name not in MODEL_REGISTRY:

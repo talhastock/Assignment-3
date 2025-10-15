@@ -1,12 +1,12 @@
 {
-  "version": "v0.2",
-  "rmse": 53.777454065343896,
+  "version": "v0.3",
+  "rmse": 54.398350726816645,
   "n_train": 353,
   "n_test": 89,
   "random_state": 42,
-  "model": "Ridge",
-  "model_description": "StandardScaler + Ridge(alpha=1.0)",
+  "model": "RandomForestRegressor",
+  "model_description": "StandardScaler + RandomForestRegressor(n_estimators=100)",
   "scaler": "StandardScaler",
   "baseline_rmse_v0_1": 53.85344583676593,
-  "rmse_delta_vs_v0_1": -0.07599177142203217
+  "rmse_delta_vs_v0_1": 0.5449048900507165
 }
