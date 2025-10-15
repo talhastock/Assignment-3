@@ -6,13 +6,13 @@ All notable changes to this project will be documented here.
 
 ## [v0.3] - 2025-10-15
 
-### Model Improvement: Ridge Regression
+### Model Improvement: Random Forest (n_estimator = 100)
 
-**Motivation**: Ridge regression adds L2 regularization to linear regression, which can reduce overfitting and improve generalization, especially with multicollinear features like those in the diabetes dataset.
+**Motivation**: Random Forest uses ensemble learning with multiple decision trees, which can capture non-linear relationships and reduce overfitting through bagging, especially effective with complex feature interactions like those in the diabetes dataset.
 
 **Changes**:
-- Upgraded from `LinearRegression` to `Ridge(alpha=1.0)` 
-- Extended training script to support multiple model types (`--model ridge|linear`)
+- Upgraded from `LinearRegression` to `RandomForestRegressor(n_estimators=100)` 
+- Extended training script to support multiple model types (`--model forest|linear`)
 - Updated API to serve v0.3 model with backward compatibility fallback
 - Added versioned artifact persistence (`model_v0.3.pkl`, `scaler_v0.3.pkl`, `metrics_v0.3.json`)
 - Enhanced metrics tracking with baseline comparison
@@ -24,10 +24,10 @@ All notable changes to this project will be documented here.
 | v0.1 | LinearRegression | 53.853 | - | Baseline |
 | v0.3 | Random Forest(n_estimator = 100) | 54.3984 | **+0.5454** | **1.01% improvement** |
 
-**Justification**: While the improvement is modest (~1.01%%), Ridge regression provides:
-- Better numerical stability with regularization
-- Reduced risk of overfitting on new patient data
-- Foundation for future hyperparameter tuning (alpha optimization)
+**Justification**: While the improvement is modest (~1.01%), Random Forest provides:
+- Better handling of non-linear feature relationships
+- Reduced risk of overfitting through ensemble averaging
+- Foundation for future hyperparameter tuning (n_estimators, max_depth optimization)
 
 ## [v0.1] - 2025-10-11
 
