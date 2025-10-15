@@ -31,9 +31,10 @@ jobs:
 
       - name: Train model smoke test
         run: |
-          python src/train.py --seed 42 --model ridge
+          python src/train.py --seed 42 --model random_forest
           cat metrics.json
           cat metrics_v0.2.json
+          cat metrics_v0.3.json
 
       - name: Run tests
         run: |
@@ -47,3 +48,4 @@ jobs:
             model/
             metrics.json
             metrics_v0.2.json
+            cat metrics_v0.3.json
